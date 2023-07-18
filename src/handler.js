@@ -34,7 +34,7 @@ const addBookHandler = (request, h) => {
     updatedAt,
   };
 
-  if (name.trim() === "") {
+  if (!name || name.trim() === "") {
     return h
       .response({
         status: "fail",
@@ -165,7 +165,7 @@ const updateBookByIdHandler = (request, h) => {
   const index = books.findIndex((book) => book.id === id);
 
   if (index !== -1) {
-    if (name.trim() === "") {
+    if (!name || name.trim() === "") {
       return h
         .response({
           status: "fail",
@@ -204,7 +204,7 @@ const updateBookByIdHandler = (request, h) => {
     return h
       .response({
         status: "success",
-        message: "Buku berhasil diperbaiki",
+        message: "Buku berhasil diperbarui",
       })
       .code(200)
       .type("application/json");
@@ -213,7 +213,7 @@ const updateBookByIdHandler = (request, h) => {
   return h
     .response({
       status: "fail",
-      message: "Gagal memperbarui buku, Id tidak ditemukan",
+      message: "Gagal memperbarui buku. Id tidak ditemukan",
     })
     .code(404)
     .type("application/json");
