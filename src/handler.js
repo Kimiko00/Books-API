@@ -82,15 +82,47 @@ const addBookHandler = (request, h) => {
 };
 
 // DISPLAY ALL BOOKS
-const getAllBookhandler = () => ({
+const getAllBookHandler = () => ({
   status: "success",
   data: {
     books: books.map(({ id, name, publisher }) => ({ id, name, publisher })),
   },
 });
 
+// Display Books by the Query
+const getAllBooksQueryHandler = (request) => {
+  const { name, reading, finished } = request.query;
+
+  let filteredBooks = books;
+
+  if (name) {
+    filteredBooks = filteredBooks.filter((book) =>
+      book.name.toLowerCase().includes(name.toLowerCase())
+    );
+  }
+
+  if (reading !== undefined) {
+    const isReading = reading.toLowerCase() === "1";
+    filteredBooks = filteredBooks.filter((book) => book.reading === isReading);
+  }
+
+  if (finished !== undefined) {
+    const isFinished = finished.toLowerCase() === "1";
+    filteredBooks = filteredBooks.filter(
+      (book) => book.finished === isFinished
+    );
+  }
+
+  return {
+    status: "success",
+    data: {
+      books: filteredBooks,
+    },
+  };
+};
+
 // DISPLAY BOOKS by id
-const getBookByIdhandler = (request, h) => {
+const getBookByIdHandler = (request, h) => {
   const { id } = request.params;
 
   const book = books.filter((bookId) => bookId.id === id)[0];
@@ -216,8 +248,9 @@ const deleteNoteByIdHandler = (request, h) => {
 
 module.exports = {
   addBookHandler,
-  getAllBookhandler,
-  getBookByIdhandler,
+  getAllBookHandler,
+  getBookByIdHandler,
   updateBookByIdHandler,
   deleteNoteByIdHandler,
+  getAllBooksQueryHandler,
 };

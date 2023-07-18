@@ -1,9 +1,10 @@
 const {
   addBookHandler,
-  getAllBookhandler,
-  getBookByIdhandler,
+  getAllBookHandler,
+  getBookByIdHandler,
   updateBookByIdHandler,
   deleteNoteByIdHandler,
+  getAllBooksQueryHandler,
 } = require("./handler");
 
 const routes = [
@@ -18,14 +19,14 @@ const routes = [
   {
     method: "GET",
     path: "/books",
-    handler: getAllBookhandler,
+    handler: getAllBookHandler,
   },
 
   // get a signle books data in the server by id
   {
     method: "GET",
     path: "/books/{id}",
-    handler: getBookByIdhandler,
+    handler: getBookByIdHandler,
   },
 
   // update the existing book in the server by the existing id
@@ -40,6 +41,13 @@ const routes = [
     method: "DELETE",
     path: "/books/{id}",
     handler: deleteNoteByIdHandler,
+  },
+
+  // get Books based on query parameter
+  {
+    method: "GET",
+    path: "/books-query",
+    handler: getAllBooksQueryHandler,
   },
 ];
 
