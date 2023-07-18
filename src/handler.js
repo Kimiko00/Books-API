@@ -34,47 +34,51 @@ const addBookHandler = (request, h) => {
     updatedAt,
   };
 
+  if (name.trim() === "") {
+    return h
+      .response({
+        status: "fail",
+        message: "Gagal menambahkan buku. Mohon isi nama buku",
+      })
+      .code(400)
+      .type("application/json");
+  }
+
+  if (readPage > pageCount) {
+    return h
+      .response({
+        status: "fail",
+        message:
+          "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount",
+      })
+      .code(400)
+      .type("application/json");
+  }
+
   books.push(newBook);
 
   const isSuccess = books.filter((book) => book.id === id).length > 0;
 
-  if (name == "") {
-    const response = h.response({
-      status: "fail",
-      message: "Gagal menambahkan buku. Mohon isi nama buku",
-    });
-    response.code(400);
-    return response;
-  }
-
-  if (readPage > pageCount) {
-    const response = h.response({
-      status: "fail",
-      message:
-        "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount",
-    });
-    response.code(400);
-    return response;
-  }
-
   if (isSuccess) {
-    const response = h.response({
-      status: "success",
-      message: "Buku berhasil ditambahkan",
-      data: {
-        bookId: id,
-      },
-    });
-    response.code(201);
-    return response;
+    return h
+      .response({
+        status: "success",
+        message: "Buku berhasil ditambahkan",
+        data: {
+          bookId: id,
+        },
+      })
+      .code(201)
+      .type("application/json");
   }
 
-  const response = h.response({
-    status: "fail",
-    message: "buku gagal ditambahkan",
-  });
-  response.code(500);
-  return response;
+  return h
+    .response({
+      status: "fail",
+      message: "buku gagal ditambahkan",
+    })
+    .code(500)
+    .type("application/json");
 };
 
 // DISPLAY ALL BOOKS
@@ -100,12 +104,13 @@ const getBookByIdhandler = (request, h) => {
     };
   }
 
-  const response = h.response({
-    status: "fail",
-    message: "buku tidak ditemukan",
-  });
-  response.code(404);
-  return response;
+  return h
+    .response({
+      status: "fail",
+      message: "Buku tidak ditemukan",
+    })
+    .code(404)
+    .type("application/json");
 };
 
 // UPDATE EXISTING BOOKS
@@ -128,9 +133,32 @@ const updateBookByIdHandler = (request, h) => {
   const index = books.findIndex((book) => book.id === id);
 
   if (index !== -1) {
+    if (name.trim() === "") {
+      return h
+        .response({
+          status: "fail",
+          message: "Gagal memperbarui buku. Mohon isi nama buku",
+        })
+        .code(400)
+        .type("application/json");
+    }
+
+    const trimmedName = name === null ? "" : name.trim();
+
+    if (readPage > pageCount) {
+      return h
+        .response({
+          status: "fail",
+          message:
+            "Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount",
+        })
+        .code(400)
+        .type("application/json");
+    }
+
     books[index] = {
       ...books[index],
-      name,
+      name: trimmedName,
       year,
       author,
       summary,
@@ -141,46 +169,55 @@ const updateBookByIdHandler = (request, h) => {
       updatedAt,
     };
 
-    const response = h.response({
-      status: "success",
-      message: "Buku berhasil diperbaiki",
-    });
-    response.code(200);
-    return response;
+    return h
+      .response({
+        status: "success",
+        message: "Buku berhasil diperbaiki",
+      })
+      .code(200)
+      .type("application/json");
   }
 
-  if (name == "") {
-    const response = h.response({
+  return h
+    .response({
       status: "fail",
-      message: "Gagal memperbarui buku. Mohon isi nama buku",
-    });
-    response.code(400);
-    return response;
-  }
-
-  if (readPage > pageCount) {
-    const response = h.response({
-      status: "fail",
-      message:
-        "gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount",
-    });
-    response.code(400);
-    return response;
-  }
-
-  const response = h.response({
-    status: "fail",
-    message: "Gagal memperbarui buku, Id tidak ditemukan",
-  });
-  response.code(404);
-  return response;
+      message: "Gagal memperbarui buku, Id tidak ditemukan",
+    })
+    .code(404)
+    .type("application/json");
 };
 
 // DELETE EXISTING BOOKS
+const deleteNoteByIdHandler = (request, h) => {
+  const { id } = request.params;
+
+  const index = books.findIndex((book) => book.id === id);
+
+  if (index !== -1) {
+    books.splice(index, 1);
+
+    return h
+      .response({
+        status: "success",
+        message: "Buku berhasil dihapus",
+      })
+      .code(200)
+      .type("application/json");
+  }
+
+  return h
+    .response({
+      status: "fail",
+      message: "Buku gagal dihapus. Id tidak ditemukan",
+    })
+    .code(404)
+    .type("application/json");
+};
 
 module.exports = {
   addBookHandler,
   getAllBookhandler,
   getBookByIdhandler,
   updateBookByIdHandler,
+  deleteNoteByIdHandler,
 };

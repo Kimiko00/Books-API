@@ -3,6 +3,7 @@ const {
   getAllBookhandler,
   getBookByIdhandler,
   updateBookByIdHandler,
+  deleteNoteByIdHandler,
 } = require("./handler");
 
 const routes = [
@@ -32,6 +33,13 @@ const routes = [
     method: "PUT",
     path: "/books/{id}",
     handler: updateBookByIdHandler,
+  },
+
+  // delete the existing book in the server by the existing id
+  {
+    method: "DELETE",
+    path: "/books/{id}",
+    handler: deleteNoteByIdHandler,
   },
 ];
 
